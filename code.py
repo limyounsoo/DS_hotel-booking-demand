@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import datetime
 import warnings
 warnings.filterwarnings(action='ignore')
@@ -28,8 +29,6 @@ print(f'Data shape\n{data.shape}')
 
 # Data information
 print(f'Data information{data.info()}', end='\n\n')
-
-########################## data plot해야함 #########################
 
 ## Data preprocessing
 # Cleaning data
@@ -111,6 +110,12 @@ df['is_holiday'] = df['arrival_date'].isin(holidays)
 df['is_weekend'] = df.stays_in_weekend_nights > 0 
 
 print(f'After feature engineering : {df.info()}', end='\n\n')
+
+# Plot the heatmap to see correlation with columns
+fig, ax = plt.subplots(figsize=(20,15))
+sns.heatmap(data.corr(), annot=True, ax=ax)
+plt.show()
+print(data.corr()['adr'].sort_values(ascending=False))
 
 # Categorical data encoding
 def transform(dataframe): 
