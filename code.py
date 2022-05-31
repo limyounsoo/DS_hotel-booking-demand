@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import datetime
 import warnings
+import plotly.express as px
 warnings.filterwarnings(action='ignore')
 #for checking if a date is a holiday
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
@@ -29,6 +30,33 @@ print(f'Data shape\n{data.shape}')
 
 # Data information
 print(f'Data information{data.info()}', end='\n\n')
+
+# Plot the heatmap to see correlation with columns
+fig, ax = plt.subplots(figsize=(20,15))
+sns.heatmap(data.corr(), annot=True, ax=ax)
+plt.show()
+print(data.corr()['adr'].sort_values(ascending=False), end='\n\n')
+
+# Showing target column('adr')
+sns.displot(data, x="adr")
+plt.xlim(0, 500)
+plt.show()
+
+# Showing adr in each hotel type
+f,ax=plt.subplots(1,2,figsize=(20,8))
+sns.distplot(data[data['hotel']=="Resort Hotel"].adr,ax=ax[0])
+ax[0].set_title('adr in Resort Hotel')
+sns.distplot(data[data['hotel']=="City Hotel"].adr,ax=ax[1])
+ax[1].set_title('adr in City Hotel')
+plt.show()
+
+# Showing adr in canceled or not
+f,ax=plt.subplots(1,2,figsize=(20,8))
+sns.distplot(data[data['is_canceled']==0].adr,ax=ax[0])
+ax[0].set_title('adr in not canceled')
+sns.distplot(data[data['is_canceled']==1].adr,ax=ax[1])
+ax[1].set_title('adr in canceled')
+plt.show()
 
 ## Data preprocessing
 # Cleaning data
@@ -110,12 +138,6 @@ df['is_holiday'] = df['arrival_date'].isin(holidays)
 df['is_weekend'] = df.stays_in_weekend_nights > 0 
 
 print(f'After feature engineering : {df.info()}', end='\n\n')
-
-# Plot the heatmap to see correlation with columns
-fig, ax = plt.subplots(figsize=(20,15))
-sns.heatmap(data.corr(), annot=True, ax=ax)
-plt.show()
-print(data.corr()['adr'].sort_values(ascending=False))
 
 # Categorical data encoding
 def transform(dataframe): 
